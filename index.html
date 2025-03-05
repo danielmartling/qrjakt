@@ -17,7 +17,6 @@
 
 <body>
     <div id="map"></div>
-    <pre id="output"></pre>
     <script>
         var basemaps = {
             OpenStreetMap: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -32,7 +31,6 @@
 
         };
 
-        // Skapar kartan med restriktioner på zoom -->
         var lfmap = L.map('map', {
             center: [60.25542, 18.69360],
             zoom: 14,
@@ -45,7 +43,7 @@
         var bounds = L.latLngBounds(southWest, northEast);
         lfmap.setMaxBounds(bounds);
         lfmap.on('drag', function () {
-            lfmap.panInsideBounds(bounds, { animate: lfmap.clearLayers() });
+            lfmap.panInsideBounds(bounds, { animate: true });
         });
 
         var scale = L.control.scale().addTo(lfmap);
@@ -53,12 +51,9 @@
 
         // createCookie("qrcookie1", "000000-000000,här händer inte så mycket.+111111-111111,Inte här heller", 100);
 
-        
-
         if (!cookieExists("qrcookie1")) {
             createCookie("qrcookie1", "", 100);
         }
-        console.log("document.cookie = " + document.cookie);
         addMarkersToMap();
 
     </script>

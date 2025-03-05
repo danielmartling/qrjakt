@@ -49,7 +49,7 @@ function isPlaceInCookie(id) {
 
 async function addPlaceToCookie(id) {
     var fetchedData = await fetchData(id);
-    updateCookie("qrcookie1", id+","+fetchedData+"+");
+    updateCookie("qrcookie1", id+","+fetchedData);
 }
 
 async function evaluateThisPlace(id) {
@@ -63,7 +63,7 @@ async function fetchData(locid) {
         const target = "data.csv";
         const res = await fetch(target);
         const data = await res.text();
-        var relevantData 
+        var relevantData;
         data.split("\n").forEach(element => {
             row = element.split(",");
             if (row[0] == locid) {
@@ -73,7 +73,6 @@ async function fetchData(locid) {
     } catch (error) {
         console.log(error);
     }
-    console.log("Nu kommer följande data skickas: " + relevantData)
     return relevantData
 }
 
@@ -86,7 +85,8 @@ function addMarkersToMap() {
         var marker = L.marker(
             ["60." + latlng[0], "18." + latlng[1]]
         ).addTo(lfmap);
-        marker.bindPopup(locationData[1]);
+        var link = "<a href='data/" + locationData[0] + ".html'>" + locationData[1] + "</a>"
+        marker.bindPopup(link);
         }
     });
 }
