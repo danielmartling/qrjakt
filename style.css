@@ -22,3 +22,14 @@ body,
 	width: 100vw;
 	z-index: 0;
 }
+
+.hollyrosa {
+	bottom: 10px;
+	left: 10px;
+	background: white;
+	border-radius: 5px;
+	border: 1px solid;
+	z-index: 1;
+	padding: 10px;
+	position: absolute;
+}

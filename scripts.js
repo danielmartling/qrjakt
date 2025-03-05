@@ -49,7 +49,7 @@ function isPlaceInCookie(id) {
 
 async function addPlaceToCookie(id) {
     var fetchedData = await fetchData(id);
-    updateCookie("qrcookie1", id+","+fetchedData);
+    updateCookie("qrcookie1", id + "," + fetchedData);
 }
 
 async function evaluateThisPlace(id) {
@@ -81,12 +81,40 @@ function addMarkersToMap() {
     localData.forEach(location => {
         if (location.length > 0) {
             var locationData = location.split(",");
-        var latlng = locationData[0].split("-");
-        var marker = L.marker(
-            ["60." + latlng[0], "18." + latlng[1]]
-        ).addTo(lfmap);
-        var link = "<a href='data/" + locationData[0] + ".html'>" + locationData[1] + "</a>"
-        marker.bindPopup(link);
+            var latlng = locationData[0].split("-");
+            var marker = L.marker(
+                ["60." + latlng[0], "18." + latlng[1]]
+            ).addTo(lfmap);
+            var link = "<a href='data/" + locationData[0] + ".html'>" + locationData[1] + "</a>"
+            marker.bindPopup(link);
         }
     });
+}
+
+async function enumerateAllLocations() {
+    try {
+        const target = "data/data.csv";
+        const res = await fetch(target);
+        const data = await res.text();
+        var counter = 0;
+        data.split("\n").forEach(element => {
+            if (element.length > 1) {
+                counter += 1;
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+    return counter;
+}
+
+function enumerateFoundLocations() {
+    localData = readCookie("qrcookie1").split("+");
+    var counter = 0;
+    localData.forEach(location => {
+        if (location.length > 1) {
+            counter += 1;
+        }
+    });
+    return counter;
 }
