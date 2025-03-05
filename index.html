@@ -2,18 +2,66 @@
 <html lang="en">
 
 <head>
-    <title>Trappermapper </title>
+    <title>QR-jakten</title>
     <link rel="icon" type="image/x-icon" href="img/hollyrosa-square.png">
     <meta charset="utf-8" />
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <script src="scripts.js"></script> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
+
 <body>
-    Hejsan hallå
+    <div id="map"></div>
+    <pre id="output"></pre>
+    <script>
+        var basemaps = {
+            OpenStreetMap: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.</a>.'
+            }),
+            Satellit: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '&copy; <a href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9">Esri, Maxar, Earthstar Geographics, and the GIS User Community</a>.'
+            })
+        };
+
+        var overlays = {
+
+        };
+
+        // Skapar kartan med restriktioner på zoom -->
+        var lfmap = L.map('map', {
+            center: [60.25542, 18.69360],
+            zoom: 14,
+            minZoom: 12,
+            layers: [basemaps.OpenStreetMap],
+        });
+
+        var southWest = L.latLng(60.0, 18.0);
+        var northEast = L.latLng(60.4, 19.0);
+        var bounds = L.latLngBounds(southWest, northEast);
+        lfmap.setMaxBounds(bounds);
+        lfmap.on('drag', function () {
+            lfmap.panInsideBounds(bounds, { animate: lfmap.clearLayers() });
+        });
+
+        var scale = L.control.scale().addTo(lfmap);
+        var control = L.control.layers(basemaps, overlays).addTo(lfmap);
+
+        // createCookie("qrcookie1", "000000-000000,här händer inte så mycket.+111111-111111,Inte här heller", 100);
+
+        
+
+        if (!cookieExists("qrcookie1")) {
+            createCookie("qrcookie1", "", 100);
+        }
+        console.log("document.cookie = " + document.cookie);
+        addMarkersToMap();
+
+    </script>
 </body>
+
 </html>
