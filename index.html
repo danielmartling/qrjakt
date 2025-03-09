@@ -23,7 +23,8 @@
                 <b>
                     <a id="numFound"></a>/<a id="numAll"></a><br>
                 </b>
-                platser.
+                platser.<br>
+                <input id="reloadButton" type="button" value="Ladda om kartan" onclick="addMarkersToMap();"/>
             </p>
         </center>
     </div>
@@ -68,7 +69,6 @@
             createCookie("qrcookie1", "", 100);
         }
 
-        var localData = readCookie("qrcookie1");
         addMarkersToMap();
 
         var numFoundLocations = enumerateFoundLocations();
