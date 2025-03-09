@@ -1,64 +1,18 @@
-function createCookie(name, value, days) {
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        var expires = "; expires=" + date.toGMTString();
-    }
-    else var expires = "";
-    document.cookie = name + "=" + value + expires + "; path=/";
-}
-
-function readCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-}
-
-function updateCookie(name, addition) {
-    oldCookie = readCookie(name);
-    createCookie("qrcookie1", oldCookie + addition + "+");
-}
-
-function eraseCookie(name) {
-    createCookie(name, "", -1);
-}
-
-function cookieExists(name) {
-    if (readCookie(name) === null) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-function isPlaceInCookie(id) {
-    localData = readCookie("qrcookie1").split("+");
-    var isInCookie = false;
-    localData.forEach(location => {
-        if (location.split(",")[0] === id) {
-            isInCookie = true;
-        }
-    });
-    return isInCookie
-}
-
-async function addPlaceToCookie(id) {
+async function addPlaceToStorage(id) {
+    // Add id to local storage
     var fetchedData = await fetchData(id);
-    updateCookie("qrcookie1", id + "," + fetchedData);
+    simpleStorage.set(id, fetchedData);
 }
 
 async function evaluateThisPlace(id) {
-    if (!isPlaceInCookie(id)) {
-        await addPlaceToCookie(id);
+    // If id not in local storage, add it to local storage.
+    if (!simpleStorage.hasKey(id)) {
+        await addPlaceToStorage(id);
     }
 }
 
 async function fetchData(locid) {
+    // Collects data from .csv-file and retrieves data of requested id
     try {
         const target = "data.csv";
         const res = await fetch(target);
@@ -77,21 +31,25 @@ async function fetchData(locid) {
 }
 
 function addMarkersToMap() {
-    localData = readCookie("qrcookie1").split("+");
-    localData.forEach(location => {
-        if (location.length > 0) {
-            var locationData = location.split(",");
-            var latlng = locationData[0].split("-");
-            var marker = L.marker(
-                ["60." + latlng[0], "18." + latlng[1]]
-            ).addTo(lfmap);
-            var link = "<a href='data/" + locationData[0] + ".html'>" + locationData[1] + "</a>"
-            marker.bindPopup(link);
-        }
+    // Add all found locations to map
+    localKeys = simpleStorage.index();
+    localKeys.forEach(key => {
+        var locationData = simpleStorage.get(key);
+        var keyArray = key.split("-");
+        var latlngArray = ["60." + keyArray[0], "18." + keyArray[1]];
+        var marker = L.marker(latlngArray).addTo(lfmap);
+        var link = "<a href='data/" + key + ".html'>" + locationData + "</a>"
+        marker.bindPopup(link);
     });
 }
 
+function flushData() {
+    // DANGEROUS, removes all data
+    simpleStorage.flush();
+}
+
 async function enumerateAllLocations() {
+    // Counts the number of locations in csv file.
     try {
         const target = "data/data.csv";
         const res = await fetch(target);
@@ -109,12 +67,6 @@ async function enumerateAllLocations() {
 }
 
 function enumerateFoundLocations() {
-    localData = readCookie("qrcookie1").split("+");
-    var counter = 0;
-    localData.forEach(location => {
-        if (location.length > 1) {
-            counter += 1;
-        }
-    });
-    return counter;
+    // Counts number of found locations.
+    return simpleStorage.index().length;
 }
