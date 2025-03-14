@@ -6,13 +6,17 @@
     <link rel="icon" type="image/x-icon" href="img/hollyrosa-square.png">
     <meta charset="utf-8" />
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
     <!-- https://github.com/ZaDarkSide/simpleStorage -->
     <script src="https://cdn.jsdelivr.net/npm/simplestorage.js@0.2.1/simpleStorage.min.js"></script>
+
+    <!-- https://github.com/pa7/heatmap.js -->
+    <script src="/src/heatmap.js"></script>
+    <script src="/src/leaflet-heatmap.js"></script>
 
     <link rel="stylesheet" href="style.css" />
     <script src="scripts.js"></script>
@@ -34,6 +38,24 @@
     <div id="map"></div>
 
     <script>
+        var heatmapData = {
+            max: 8,
+            data: []
+        };
+
+        var heatmapConfig = {
+            "radius": 0.003,
+            "maxOpacity": 0.5,
+            "scaleRadius": true,
+            "useLocalExtrema": true,
+            latField: 'lat',
+            lngField: 'lng',
+            valueField: 'count'
+        };
+
+        var heatmapLayer = new HeatmapOverlay(heatmapConfig);
+        heatmapLayer.setData(heatmapData);
+
         var basemaps = {
             OpenStreetMap: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.</a>.'
@@ -43,13 +65,15 @@
             })
         };
 
-        var overlays = {};
+        overlays = {
+            Ledtråd: heatmapLayer
+        }
 
         var lfmap = L.map('map', {
             center: [60.25542, 18.69360],
             zoom: 14,
             minZoom: 12,
-            layers: [basemaps.OpenStreetMap],
+            layers: [basemaps.OpenStreetMap, heatmapLayer],
         });
 
         var southWest = L.latLng(60.0, 18.0);
@@ -74,23 +98,23 @@
         });
 
         addMarkersToMap();
+        addHeatmapToMap();
 
-        var infomarker = L.marker([60.26695, 18.71161]).addTo(lfmap);
+        var infomarker = L.marker([60.25456, 18.72761]).addTo(lfmap);
         var customPopup =
             "<b>Lite info:</b><br>" +
             "Vi lagrar " + simpleStorage.storageSize() + " byte i din enhets minne.<br>" +
-            "Lagring funkar? " + simpleStorage.canUse() + "<br>" + 
+            "Lagring funkar? " + simpleStorage.canUse() + "<br>" +
             "Funna platser: " + simpleStorage.index().sort() + "<br>" +
             "<br>" +
-            "<b>VARNING!</b> Går ej att ångra!<br>" + 
+            "<b>VARNING!</b> Går ej att ångra!<br>" +
             "<input id='flushButton' type='button' value='Radera lagrad data' onclick='flushData();location.reload(); '/>";
         var customOptions = {
             'maxWidth': '500',
             'className': 'custom'
         };
         infomarker.bindPopup(customPopup, customOptions);
-        // infomarker.openPopup();
-
+        
     </script>
 </body>
 

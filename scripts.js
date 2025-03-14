@@ -12,27 +12,30 @@ async function evaluateThisPlace(id) {
 }
 
 async function fetchData(locid) {
-    // Collects data from .csv-file and retrieves data of requested id
+    // Collects data from .json-file and retrieves data of requested id
     try {
-        const target = "data.csv";
-        const res = await fetch(target);
-        const data = await res.text();
+        const response = await fetch("data.json");
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const json = await response.json();
         var relevantData;
-        data.split("\n").forEach(element => {
-            row = element.split(",");
-            if (row[0] == locid) {
-                relevantData = row[1];
+        json.forEach(element => {
+            console.log(element.latlng)
+            if (element.latlng === locid) {
+                console.log(element.latlng)
+                relevantData = element.desc;
             }
         });
     } catch (error) {
-        console.log(error);
-    }
+        console.error(error.message);
+    };
     return relevantData
 }
 
 function addMarkersToMap() {
-    // Add all found locations to map
-    localKeys = simpleStorage.index();
+    // Adds found locations as map pin markers
+    var localKeys = simpleStorage.index();
     localKeys.forEach(key => {
         var locationData = simpleStorage.get(key);
         var keyArray = key.split("-");
@@ -43,6 +46,30 @@ function addMarkersToMap() {
     });
 }
 
+async function addHeatmapToMap() {
+    // Adds not found locations to heatmap
+    var localKeys = simpleStorage.index();
+    try {
+        const response = await fetch("data/data.json");
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const json = await response.json();
+        json.forEach(element => {
+            if (!localKeys.includes(element.latlng)) {
+                var keyArray = element.latlng.split("-");
+                heatmapLayer.addData({
+                    lat: parseFloat("60." + keyArray[0]),
+                    lng: parseFloat("18." + keyArray[1]),
+                    count: 1
+                });
+            }
+        });
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
 function flushData() {
     // DANGEROUS, removes all data
     simpleStorage.flush();
@@ -51,19 +78,15 @@ function flushData() {
 async function enumerateAllLocations() {
     // Counts the number of locations in csv file.
     try {
-        const target = "data/data.csv";
-        const res = await fetch(target);
-        const data = await res.text();
-        var counter = 0;
-        data.split("\n").forEach(element => {
-            if (element.length > 1) {
-                counter += 1;
-            }
-        });
+        const response = await fetch("data/data.json");
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const json = await response.json();
+        return json.length;
     } catch (error) {
-        console.log(error);
+        console.error(error.message);
     }
-    return counter;
 }
 
 function enumerateFoundLocations() {
