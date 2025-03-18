@@ -87,7 +87,7 @@
         var scale = L.control.scale(
             { position: 'bottomright' }
         ).addTo(lfmap);
-        var control = L.control.layers(basemaps, overlays).addTo(lfmap);
+        var control = L.control.layers(basemaps, overlays, {collapsed:false}).addTo(lfmap);
 
         var numFoundLocations = enumerateFoundLocations();
         document.getElementById('numFound').innerText = numFoundLocations.toString();
