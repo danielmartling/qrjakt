@@ -26,7 +26,7 @@ body,
 .ruta {
 	bottom: 10px;
 	left: 10px;
-	background: white;
+	background: var(--manifold-color);
 	border-radius: 5px;
 	border: 1px solid;
 	z-index: 1;
@@ -51,4 +51,36 @@ body,
 	border-radius: 4px;
 	border: 1px solid var(--accent-color);
 	background-color: white;
+}
+
+input[type='checkbox'],
+input[type='radio']{
+	accent-color: var(--accent-color);
+}
+
+a:link,
+a:visited {
+	color: var(--accent-color);
+}
+
+
+.leaflet-control-layers {
+  border: 1px solid var(--accent-color);
+  background: var(--manifold-color);
+  
+}
+
+
+/* .leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+	font: bold 35px 'Lucida Console', Monaco, monospace; 
+	text-indent: 0px;
+	border: none
+} */
+
+.leaflet-touch .leaflet-bar a {
+	background-color: var(--manifold-color);
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
 }
