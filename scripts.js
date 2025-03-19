@@ -87,7 +87,7 @@ async function addHexmapToMap() {
                 hexData.push([parseFloat("18." + keyArray[1]), parseFloat("60." + keyArray[0])]);
             }
         });
-        hexLayer.data(hexData).addTo(lfmap);
+        hexLayer.data(hexData);
     } catch (error) {
         console.error(error.message);
     }

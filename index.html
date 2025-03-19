@@ -47,7 +47,6 @@
             max: 8,
             data: []
         };
-
         var heatmapConfig = {
             "radius": 0.003,
             "maxOpacity": 0.5,
@@ -57,9 +56,9 @@
             lngField: 'lng',
             valueField: 'count'
         };
-
         var heatmapLayer = new HeatmapOverlay(heatmapConfig);
         heatmapLayer.setData(heatmapData);
+        addHeatmapToMap();
 
         var hexmapOptions = {
             radius: 125,
@@ -70,9 +69,9 @@
             colorRange: ['#f7fbff', '#08306b'],
             radiusRange: [1, 125],
         };
-
         var hexLayer = L.hexbinLayer(hexmapOptions)
             .hoverHandler(L.HexbinHoverHandler.tooltip());
+        addHexmapToMap();
 
         var foundLayer = L.featureGroup();
         var infoLayer = L.featureGroup();
@@ -91,13 +90,14 @@
             "Ledtråd: Hexmap": hexLayer,
             "Funna platser": foundLayer,
             "Visa inforuta": infoLayer
-        }
+        };
 
         var lfmap = L.map('map', {
             center: [60.25542, 18.69360],
             zoom: 14,
             minZoom: 12,
-            layers: [basemaps.OpenStreetMap, hexLayer, foundLayer, infoLayer],
+            maxZoom: 17,
+            layers: [basemaps.OpenStreetMap, foundLayer, infoLayer],
         });
 
         var southWest = L.latLng(60.0, 18.0);
@@ -111,6 +111,7 @@
         var scale = L.control.scale(
             { position: 'bottomright' }
         ).addTo(lfmap);
+
         var control = L.control.layers(basemaps, overlays, { collapsed: false }).addTo(lfmap);
 
         var numFoundLocations = enumerateFoundLocations();
@@ -120,10 +121,6 @@
             numLocations = results
             document.getElementById('numAll').innerText = numLocations;
         });
-
-        addMarkersToMap();
-        addHeatmapToMap();
-        addHexmapToMap();
 
         var infoPopup = L.popup({
             autoClose: false,
@@ -146,6 +143,9 @@
             );
         infoLayer.addLayer(infoPopup);
 
+        addMarkersToMap();
+
     </script>
 </body>
+
 </html>
