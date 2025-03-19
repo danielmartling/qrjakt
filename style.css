@@ -35,20 +35,20 @@ body,
 }
 
 .hexbin-hexagon {
-	stroke: #000;
+	stroke: var(--accent-color);
 	stroke-width: 1px;
 }
 
-.hexbin-container .hexbin-container:hover .hexbin-hexagon {
+.hexbin-container:hover .hexbin-hexagon {
 	transition: 200ms;
-	stroke: orange;
-	stroke-width: 1px;
+	stroke: var(--accent-color);
+	stroke-width: 2px;
 	stroke-opacity: 1;
 }
 
 .hexbin-tooltip {
 	padding: 8px;
 	border-radius: 4px;
-	border: 1px solid black;
+	border: 1px solid var(--accent-color);
 	background-color: white;
 }
