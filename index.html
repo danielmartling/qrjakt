@@ -18,6 +18,11 @@
     <script src="src/heatmap.js"></script>
     <script src="src/leaflet-heatmap.js"></script>
 
+    <!-- https://github.com/bluehalo/leaflet-d3 -->
+    <script src="src/d3.js"></script>
+    <script src="src/d3-hexbin.js"></script>
+    <script src="src/leaflet-d3.js"></script>
+
     <link rel="stylesheet" href="style.css" />
     <script src="scripts.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -56,6 +61,22 @@
         var heatmapLayer = new HeatmapOverlay(heatmapConfig);
         heatmapLayer.setData(heatmapData);
 
+        var hexmapOptions = {
+            radius: 125,
+            opacity: 0.4,
+            duration: 200,
+            colorScaleExtent: [1, undefined],
+            radiusScaleExtent: [1, undefined],
+            colorRange: ['#f7fbff', '#08306b'],
+            radiusRange: [1, 125],
+        };
+
+        var hexLayer = L.hexbinLayer(hexmapOptions)
+            .hoverHandler(L.HexbinHoverHandler.tooltip());
+
+        var foundLayer = L.featureGroup();
+        var infoLayer = L.featureGroup();
+
         var basemaps = {
             OpenStreetMap: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.</a>.'
@@ -66,14 +87,17 @@
         };
 
         overlays = {
-            Ledtråd: heatmapLayer
+            "Ledtråd: Heatmap": heatmapLayer,
+            "Ledtråd: Hexmap": hexLayer,
+            "Funna platser": foundLayer,
+            "Visa inforuta": infoLayer
         }
 
         var lfmap = L.map('map', {
             center: [60.25542, 18.69360],
             zoom: 14,
             minZoom: 12,
-            layers: [basemaps.OpenStreetMap, heatmapLayer],
+            layers: [basemaps.OpenStreetMap, hexLayer, foundLayer, infoLayer],
         });
 
         var southWest = L.latLng(60.0, 18.0);
@@ -87,7 +111,7 @@
         var scale = L.control.scale(
             { position: 'bottomright' }
         ).addTo(lfmap);
-        var control = L.control.layers(basemaps, overlays, {collapsed:false}).addTo(lfmap);
+        var control = L.control.layers(basemaps, overlays, { collapsed: false }).addTo(lfmap);
 
         var numFoundLocations = enumerateFoundLocations();
         document.getElementById('numFound').innerText = numFoundLocations.toString();
@@ -99,23 +123,29 @@
 
         addMarkersToMap();
         addHeatmapToMap();
+        addHexmapToMap();
 
-        var infomarker = L.marker([60.25456, 18.72761]).addTo(lfmap);
-        var customPopup =
-            "<b>Lite info:</b><br>" +
-            "Vi lagrar " + simpleStorage.storageSize() + " byte i din enhets minne.<br>" +
-            "Lagring funkar? " + simpleStorage.canUse() + "<br>" +
-            "Funna platser: " + simpleStorage.index().sort() + "<br>" +
-            "<br>" +
-            "<b>VARNING!</b> Går ej att ångra!<br>" +
-            "<input id='flushButton' type='button' value='Radera lagrad data' onclick='flushData();location.reload(); '/>";
-        var customOptions = {
+        var infoPopup = L.popup({
+            autoClose: false,
+            closeButton: false,
+            closeOnClick: false,
+            closeOnEscapeKey: false,
+            autoPan: false,
             'maxWidth': '500',
             'className': 'custom'
-        };
-        infomarker.bindPopup(customPopup, customOptions);
+        })
+            .setLatLng([60.25456, 18.75761])
+            .setContent(
+                "<b>Lite info:</b><br>" +
+                "Vi lagrar " + simpleStorage.storageSize() + " byte i din enhets minne.<br>" +
+                "Lagring funkar? " + simpleStorage.canUse() + "<br>" +
+                "Funna platser: " + simpleStorage.index().sort() + "<br>" +
+                "<br>" +
+                "<b>VARNING!</b> Går ej att ångra!<br>" +
+                "<input id='flushButton' type='button' value='Radera lagrad data' onclick='flushData();location.reload(); '/>"
+            );
+        infoLayer.addLayer(infoPopup);
 
     </script>
 </body>
-
 </html>

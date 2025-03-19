@@ -40,9 +40,10 @@ function addMarkersToMap() {
         var locationData = simpleStorage.get(key);
         var keyArray = key.split("-");
         var latlngArray = ["60." + keyArray[0], "18." + keyArray[1]];
-        var marker = L.marker(latlngArray).addTo(lfmap);
+        var marker = L.marker(latlngArray);
         var link = "<a href='data/" + key + ".html'>" + locationData + "</a>"
         marker.bindPopup(link);
+        foundLayer.addLayer(marker);
     });
 }
 
@@ -65,6 +66,28 @@ async function addHeatmapToMap() {
                 });
             }
         });
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+async function addHexmapToMap() {
+    // Adds not found locations to hexmap
+    var localKeys = simpleStorage.index();
+    try {
+        var hexData = [];
+        const response = await fetch("data/data.json");
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const json = await response.json();
+        json.forEach(element => {
+            if (!localKeys.includes(element.latlng)) {
+                var keyArray = element.latlng.split("-");
+                hexData.push([parseFloat("18." + keyArray[1]), parseFloat("60." + keyArray[0])]);
+            }
+        });
+        hexLayer.data(hexData).addTo(lfmap);
     } catch (error) {
         console.error(error.message);
     }
