@@ -5,7 +5,7 @@ async function addPlaceToStorage(id) {
     // console.log("done")
     // location.reload();
     // window.location.href = "https://" + location.host;
-    window.location.href = "/";
+    // window.location.href = "/";
     // location.reload();
 }
 
