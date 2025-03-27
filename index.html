@@ -23,6 +23,8 @@
     <script src="src/d3-hexbin.js"></script>
     <script src="src/leaflet-d3.js"></script>
 
+    <script src="https://www.w3schools.com/lib/w3data.js"></script>
+
     <link rel="stylesheet" href="style.css" />
     <script src="scripts.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -144,6 +146,18 @@
         infoLayer.addLayer(infoPopup);
 
         addMarkersToMap();
+        // console.log(document.location.href);
+        var url = document.location.href;
+        if (url.includes("#")) {
+            key = url.split("#")[1];
+            // console.log(key);
+            evaluateThisPlace(key);
+            // window.location.href = "../";
+            // location.host;
+            // location.reload();
+            // window.location.href = location.host;
+        }
+        // console.log("https://" + location.host);
 
     </script>
 </body>

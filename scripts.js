@@ -2,11 +2,17 @@ async function addPlaceToStorage(id) {
     // Add id to local storage
     var fetchedData = await fetchData(id);
     simpleStorage.set(id, fetchedData);
+    // console.log("done")
+    // location.reload();
+    window.location.href = "https://" + location.host;
+    // location.reload();
 }
 
 async function evaluateThisPlace(id) {
     // If id not in local storage, add it to local storage.
+    // console.log("evaluating");
     if (!simpleStorage.hasKey(id)) {
+        // console.log("adding");
         await addPlaceToStorage(id);
     }
 }
@@ -14,16 +20,16 @@ async function evaluateThisPlace(id) {
 async function fetchData(locid) {
     // Collects data from .json-file and retrieves data of requested id
     try {
-        const response = await fetch("data.json");
+        const response = await fetch("data/data.json");
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
         const json = await response.json();
         var relevantData;
         json.forEach(element => {
-            console.log(element.latlng)
+            // console.log(element.latlng)
             if (element.latlng === locid) {
-                console.log(element.latlng)
+                // console.log(element.latlng)
                 relevantData = element.desc;
             }
         });
@@ -43,7 +49,29 @@ function addMarkersToMap() {
         var marker = L.marker(latlngArray);
         var link = "<a href='data/" + key + ".html'>" + locationData + "</a>"
         marker.bindPopup(link);
+        // w3IncludeHTML();
+        // console.log("data/" + key + ".html")
+        // marker.bindPopup('<div w3-include-html="data/" + key + ".html"></div>');
+
+        // var data;
+        // fetch("data/" + key + ".html")
+        //     .then(response => {
+        //         if (!response.ok) {
+        //             throw new Error(":-(");
+        //         }
+        //         return response.text();
+        //     })
+        //     .then(data => {
+        //         document.getElementById('content').innerHTML = data;
+        //     })
+        //     .catch(error => {
+        //         console.error(":-( ajoj", error);
+        //     });
+        // console.log(data);
+        // marker.bindPopup(data);
         foundLayer.addLayer(marker);
+
+        // marker.openPopup();
     });
 }
 

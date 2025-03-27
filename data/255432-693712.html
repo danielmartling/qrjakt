@@ -8,19 +8,35 @@
     <title>QR-jakten - Lillgårn</title>
     <script src="https://cdn.jsdelivr.net/npm/simplestorage.js@0.2.1/simpleStorage.min.js"></script>
     <script src="../scripts.js"></script>
+    <link rel="stylesheet" href="../style.css" />
 </head>
 
 <body>
-    <p><a href="../">Tillbaka till kartan</a></p>
-    <p>Detta är den första testsidan.</p>
-    <div>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/phOGDmW2BMQ?si=oBtoclQp_zh1XFSD"
-            title="YouTube video player" frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <div class="box">
+        <div class="sidebar">
+            <button>
+                <a href="../">Tillbaka till kartan</a>
+            </button>
+        </div>
+        <div class="right-box">
+            <div class="banner">
+                Detta är den första testsidan.
+            </div>
+            <div class="text-box">
+                <p>Här är Vässarövisan!</p>
+                <p>
+                    <iframe src="https://www.youtube.com/embed/phOGDmW2BMQ?si=oBtoclQp_zh1XFSD"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </p>
+            </div>
+        </div>
     </div>
+
     <script>
         evaluateThisPlace("255432-693712");
+        
     </script>
 </body>
 

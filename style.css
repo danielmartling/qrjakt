@@ -84,3 +84,41 @@ a:visited {
 	height: 40px;
 	line-height: 40px;
 }
+
+.box {
+    display: flex;
+    flex-direction: row;
+    width: min(100%, 500px);
+    border: 1px solid black;
+}
+
+.sidebar {
+    /* flex: 1; */
+    background-color: #e1e1e1;
+    color: black;
+    align-content: top;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.right-box {
+    flex: 10;
+    background-color: transparent;
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.banner {
+    flex: 1;
+    background-color: #003660;
+    color: white;
+    align-content: center;
+    padding: 10px;
+    border: 1px solid black;
+    font-size: 20px;
+}
+
+.text-box {
+    flex: 10;
+    background-color: transparent;
+}
