@@ -4,7 +4,8 @@ async function addPlaceToStorage(id) {
     simpleStorage.set(id, fetchedData);
     // console.log("done")
     // location.reload();
-    window.location.href = "https://" + location.host;
+    // window.location.href = "https://" + location.host;
+    window.location.href = "/";
     // location.reload();
 }
 
